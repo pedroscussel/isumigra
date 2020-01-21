@@ -1,0 +1,183 @@
+@extends('adminlte::master')
+
+@section('adminlte_css')
+    <link rel="stylesheet"
+          href="{{ asset('vendor/adminlte/dist/css/skins/skin-' . config('adminlte.skin', 'blue') . '.min.css')}} ">
+    @stack('css')
+    @yield('css')
+@stop
+
+@section('body_class', 'skin-' . config('adminlte.skin', 'blue') . ' sidebar-mini ' . (config('adminlte.layout') ? [
+    'boxed' => 'layout-boxed',
+    'fixed' => 'fixed',
+    'top-nav' => 'layout-top-nav'
+][config('adminlte.layout')] : '') . (config('adminlte.collapse_sidebar') ? ' sidebar-collapse ' : ''))
+
+@section('body')
+    <div class="wrapper">
+
+        <!-- Main Header -->
+        <header class="main-header">
+            @if(config('adminlte.layout') == 'top-nav')
+            <nav class="navbar navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="{{ url(config('adminlte.dashboard_url', 'home')) }}" class="navbar-brand">
+                            <img src="{{asset('images/migra_logo.png')}}" height="40px">
+
+                        </a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            @each('adminlte::partials.menu-item-top-nav', $adminlte->menu(), 'item')
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+            @else
+                <!-- Logo -->
+                <a href="{{ url(config('adminlte.dashboard_url', 'home')) }}" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini">{!! config('adminlte.logo_mini', '<b>M</b>') !!}</span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><img src="{{asset('images/migra_logo.png')}}" height="40px"></span>
+                </a>
+                <!-- Header Navbar -->
+                @if($agent->isDesktop())
+                    <nav class="navbar navbar-static-top" role="navigation"><style>.barnav{color:white; padding:20px; font-size: 30px; } </style>
+                @else
+                    <nav class="navbar navbar-static-top" role="navigation"><style>.barnav{color:white; font-size: 22px; padding:10px; vertical-align:-16px; }</style>
+                @endif
+                <span class="barnav">@yield('navbar')</span>
+                @if($agent->isMobile())
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                @endif
+            @endif
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+
+                    <ul class="nav navbar-nav">
+                        <li>
+                            @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<'))
+                                <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
+                                    <i class="fa fa-fw fa-power-off"></i>
+                                    @if($agent->isDesktop())
+                                    {{ trans('adminlte::adminlte.log_out') }}
+                                    @endif
+                                </a>
+                            @else
+                                <a href="#"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                >
+                                    {{Auth::user()->name}}
+                                    <i class="fa fa-fw fa-power-off"></i>
+                                    @if($agent->isDesktop())
+                                    {{ trans('adminlte::adminlte.log_out') }}
+                                    @endif
+                                </a>
+                                <form id="logout-form" action="{{ url(config('adminlte.logout_url', 'auth/logout')) }}" method="POST" style="display: none;">
+                                    @if(config('adminlte.logout_method'))
+                                        {{ method_field(config('adminlte.logout_method')) }}
+                                    @endif
+                                    {{ csrf_field() }}
+                                </form>
+                            @endif
+                        </li>
+                    </ul>
+                </div>
+                @if(config('adminlte.layout') == 'top-nav')
+                </div>
+                @endif
+            </nav>
+        </header>
+
+        @if(config('adminlte.layout') != 'top-nav')
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    @each('adminlte::partials.menu-item', $adminlte->menu(), 'item')
+                </ul>
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        @endif
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            @if(config('adminlte.layout') == 'top-nav')
+            <div class="container">
+            @endif
+
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+
+                @yield('content_header')
+                @if( isset($_SERVER['HTTP_REFERER']) )
+                    @if($agent->isMobile() && substr($_SERVER['HTTP_REFERER'], strrpos($_SERVER['HTTP_REFERER'], '/') + 1))
+                        <button class="btn btn-sm btn-primary" onclick="window.history.back();"><i  class="fa fa-arrow-left"></i></button>
+                    @endif
+                @endif
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        {{$errors->first()}}
+                    </div>
+                @endif
+                @yield('content')
+                <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.min.js') }}" type="text/javascript"></script>
+                <script>
+                $(document).ready(function() {
+                    $('.js-example-basic-single').select2();
+                });
+                </script>
+            </section>
+            <!-- /.content -->
+            @if(config('adminlte.layout') == 'top-nav')
+            </div>
+            <!-- /.container -->
+            @endif
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class='main-footer no-print'>
+            <div class='row'>
+                <div class='col-sm-6'>
+                    <strong>Desenvolvido por <a href=''>Instituto SENAI de Inovação e Soluções Integradas em Metalmecânica</a></storng>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2">
+                    <a href='https://embrapii.org.br/unidades/unidade-embrapii-de-sistemas-de-sensoriamento-isi-sensoriamento-instituto-senai-de-inovacao-em-solucoes-integradas-em-metalmecanica/' target='_blank'><img class='left' src='{{asset('images/embrapii-logo.png')}}' height="45"></a>
+                </div>
+                <div class="col-sm-2">
+                    <a href='https://www.senairs.org.br/institutos/solucoes-integradas-em-metalmecanica' target='_blank'><img class='left' src='{{asset('images/isi_160.png')}}'></a>
+                </div>
+            </div>
+
+
+        </footer>
+    </div>
+    <!-- ./wrapper -->
+@stop
+
+@section('adminlte_js')
+    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+    @stack('js')
+    @yield('js')
+@stop

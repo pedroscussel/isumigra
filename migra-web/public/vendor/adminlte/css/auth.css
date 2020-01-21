@@ -1,0 +1,16 @@
+.auth-links {
+    margin-top: 10px;
+}
+
+
+.login-page {
+    background: url('../../../images/background.jpg') no-repeat;
+    background-size:cover;
+}
+
+/*
+.login-logo {
+    background: url('../../../images/migra_logo.png') no-repeat;
+    background-size:cover;
+}
+*/

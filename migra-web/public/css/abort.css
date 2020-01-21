@@ -1,0 +1,52 @@
+.auth-links {
+    margin-top: 10px;
+}
+
+
+.abort-page {
+    background: url('../images/background.jpg') no-repeat;
+    background-size:cover;
+}
+
+.abort-box {
+    text-align: center;
+    margin: 250px;
+}
+
+.abort-logo {
+    margin-bottom: 50px;
+}
+
+.abort-page h1 {
+    font-size: 52px;
+    font-weight: bold;
+}
+
+.abort-box-msg {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.abort-box-body {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding-top: 75px;
+    padding-bottom: 75px;
+    border-top: 0;
+    color: #666;
+    border: 2px solid #dd4b39;
+    border-radius: 25px;
+}
+
+.abort-link {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 40px;
+    color: #dd4b39 !important;
+}
+/*
+.login-logo {
+    background: url('../../../images/migra_logo.png') no-repeat;
+    background-size:cover;
+}
+*/
